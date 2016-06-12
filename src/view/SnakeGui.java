@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -23,18 +24,20 @@ public class SnakeGui extends JFrame implements PropertyChangeListener {
 	private GameCanvas canvas;
 	private Timer myTimer;
 	private int currentDirection;
+	private ControlsPopup controls;
 
 	public SnakeGui() {
-		// super("TranslucentWindow");
-		//setUndecorated(true);
+		setUndecorated(true);
 		this.setAlwaysOnTop(true);
-		setLocation(200, 200);
-
-	//	setBackground(new Color(0, 0, 0, 0));
+		setLocation(600, 100);
+		setBackground(new Color(0, 255, 0, 50));
+		
 	//	setOpacity(0.1f);
-
+		controls = new ControlsPopup();
+		controls.addPropertyChangeListener(this);
+		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		currentDirection = 2;
+		currentDirection = new Random().nextInt(4);
 		canvas = new GameCanvas();
 		canvas.addKeyListener(new MoveListener());
 		canvas.addPropertyChangeListener(this);
@@ -42,6 +45,9 @@ public class SnakeGui extends JFrame implements PropertyChangeListener {
 		canvas.requestFocusInWindow();
 
 		setContentPane(canvas);
+		getContentPane().setBackground(Color.BLACK);
+		setLayout(new BorderLayout());
+		
 		myTimer = new Timer(500, new TimerListener());
 
 		setSize(new Dimension(500, 500));
@@ -49,7 +55,8 @@ public class SnakeGui extends JFrame implements PropertyChangeListener {
 		myTimer.start();
 	}
 	private void closeProgram() {
-		this.dispose();
+		myTimer.stop();
+		dispose();
 	}
 	// direction Number = 3
 	private void moveLeft() {
@@ -76,6 +83,10 @@ public class SnakeGui extends JFrame implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("eaten")) {
 			myTimer.stop();
+		} else if (event.getPropertyName().equals("win")) {
+			myTimer.stop();
+		} else if (event.getPropertyName().equals("close")) {
+			closeProgram();
 		}
 	}
 
@@ -91,24 +102,28 @@ public class SnakeGui extends JFrame implements PropertyChangeListener {
 			int key = theEvent.getKeyCode();
 			switch (key) {
 				case KeyEvent.VK_LEFT :
-					currentDirection = 3;
-					if (myTimer.isRunning())
+					if (myTimer.isRunning() && currentDirection != 1) {
+						currentDirection = 3;
 						moveLeft();
+					}
 					break;
 				case KeyEvent.VK_RIGHT :
-					currentDirection = 1;
-					if (myTimer.isRunning())
+					if (myTimer.isRunning() && currentDirection != 3){
+						currentDirection = 1;
 						moveRight();
+					}	
 					break;
 				case KeyEvent.VK_UP :
-					currentDirection = 0;
-					if (myTimer.isRunning())
+					if (myTimer.isRunning() && currentDirection != 2){
+						currentDirection = 0;
 						moveUp();
+					}
 					break;
 				case KeyEvent.VK_DOWN :
-					currentDirection = 2;
-					if (myTimer.isRunning())
+					if (myTimer.isRunning() && currentDirection != 0){
+						currentDirection = 2;
 						moveDown();
+					}
 					break;
 			}
 		}

@@ -3,7 +3,7 @@ package model;
 public class Snake {
 	
 	private SnakeBot head;
-	private int size;
+	private int size =1;
 	private int maxLength;
 	
 	public Snake(int startX, int startY, int maxLength) {
@@ -12,14 +12,6 @@ public class Snake {
 		head.setPrevious(head);
 
 		addBody(head.getX()+1, head.getY());
-		addBody(head.getX()+2, head.getY());
-		addBody(head.getX()+3, head.getY());
-		addBody(head.getX()+4, head.getY());
-		addBody(head.getX()+5, head.getY());
-		addBody(head.getX()+6, head.getY());
-		addBody(head.getX()+7, head.getY());
-		addBody(head.getX()+8, head.getY());
-		addBody(head.getX()+9, head.getY());
 	}
 	
 	/**
@@ -32,6 +24,7 @@ public class Snake {
 		curr.setNext(head);
 		head.setPrevious(curr);
 		curr.getPrevious().setNext(curr);
+		size++;
 	}
 	
 	public int getSize() {
@@ -50,9 +43,9 @@ public class Snake {
 	 * @param x the new x location of the snake head
 	 * @param y the new y location of the snake head.
 	 */
-	public void move(int x, int y) {
+	public void move(int x, int y, int lengthOfBoard) {	
 		SnakeBot curr = head.getPrevious();
-		
+				
 		while (!curr.equals(head)) {
 			curr.setX(curr.getPrevious().getX());
 			curr.setY(curr.getPrevious().getY());
@@ -61,6 +54,20 @@ public class Snake {
 		
 		curr.updateX_Y(x, y);
 		head = curr;
+		
+		if (head.getX() >= lengthOfBoard)
+			head.setX(head.getX() % lengthOfBoard);
+		else if (head.getX() < 0)
+			head.setX(head.getX() + lengthOfBoard);
+		
+		if (head.getY() >= lengthOfBoard) 
+			head.setY(head.getY() % lengthOfBoard);
+		else if (head.getY() < 0)
+			head.setY(head.getY() + lengthOfBoard);
+	}
+	
+	public void grow() {
+		addBody(head.getPrevious().getX(), head.getPrevious().getY());
 	}
 	
 	public SnakeBot getSnake() {

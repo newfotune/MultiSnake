@@ -15,7 +15,7 @@ public class ControlsPopup extends JDialog {
 	public ControlsPopup() {
 		myPanel = new JPanel();
 		myPanel.setSize(300, 300);
-		
+		//this.setUndecorated(true);
 		myPanel.add(createCloseButton());
 		
 		add(myPanel);
@@ -29,7 +29,8 @@ public class ControlsPopup extends JDialog {
 
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				
+				firePropertyChange("close",null,null);
+				dispose();
 			}
 		});
 		return button;
